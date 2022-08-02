@@ -12,16 +12,20 @@ const PORT = '3000';
 const data = './talker.json';
 
 function validateLogin(req, res, next) {
-  const { password, email } = req.body;
+  const { email, password } = req.body;
 
   const validateEmail = /\S+@\S+\.\S+/;
 
-  if (password.length < 4 || password.length > 8) {
-    return res.status(400).json({ message: 'Invalid password!' });
-  } 
+  if (!email) return res.status(400).json({ message: 'O campo "email" é obrigatório' });
   if (validateEmail.test(email) === false) {
-    return res.status(400).json({ message: 'Invalid email!' });
-  } 
+    return res.status(400).json({
+      message: 'O "email" deve ter o formato "email@email.com"',
+    });
+  }
+  if (!password) return res.status(400).json({ message: 'O campo "password" é obrigatório' });
+  if (password.length <= 6) {
+    return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
+  }
   next();
 }
 
