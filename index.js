@@ -90,6 +90,17 @@ app.put('/talker/:id',
   return res.status(200).json(talkersArray[talker]);
 });
 
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await fs.readFile(data, 'utf8');
+  const talkersArray = JSON.parse(talkers);
+  const talker = talkersArray.findIndex((t) => t.id === Number(id));
+  if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  talkersArray.splice(talker, 1);
+  await fs.writeFile(data, JSON.stringify(talkersArray));
+  return res.status(204).json({ message: 'Pessoa palestrante removida' });
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
